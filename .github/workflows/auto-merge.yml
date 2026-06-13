@@ -1,0 +1,28 @@
+name: Auto merge notes pull requests
+
+on:
+  pull_request:
+    branches: ["master"]
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-merge:
+    if: github.event.pull_request.head.repo.full_name == github.repository && !github.event.pull_request.draft
+    runs-on: ubuntu-latest
+    steps:
+      - name: Merge pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+        run: |
+          for attempt in 1 2 3 4 5 6; do
+            if gh pr merge "$PR_URL" --squash --delete-branch; then
+              exit 0
+            fi
+            sleep 10
+          done
+          gh pr merge "$PR_URL" --squash --delete-branch
