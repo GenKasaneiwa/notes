@@ -1,0 +1,17 @@
+.DS_Store
+.history/
+.vscode/
+.env
+.env.*
+*.local
+*.log
+node_modules/
+
+# Keep private source material out of the published static site.
+private/
+drafts/
+secrets/
+*.json
+*.yaml
+*.yml
+!.github/workflows/*.yml
