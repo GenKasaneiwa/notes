@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>フロントエンドのレンダリングとデプロイ形式を比較する | 技術質問ノート</title>
+  <meta name="description" content="CSR、SSG、SSR、ISR、Edge SSR、Islands Architecture、React Server Components、PWAのメリットとデメリットを比較する。">
+  <link rel="stylesheet" href="../../styles/site.css">
+</head>
+<body>
+  <main class="article">
+    <header class="article-header">
+      <p class="article-meta"><time datetime="2026-06-14">2026-06-14</time> / Web</p>
+      <h1>フロントエンドのレンダリングとデプロイ形式を比較する</h1>
+      <p>CSR、SSG、SSR、ISR、Edge SSR、Islands Architecture、React Server Components、PWAについて、どこでHTMLを作り、どこへデプロイし、どんなトレードオフがあるのかを整理する。</p>
+    </header>
+
+    <section>
+      <h2>結論</h2>
+      <p>更新頻度が低く、認証や個別表示が少ないページはSSGが第一候補です。ユーザーごとに内容が変わる、検索流入も重視する画面はSSRまたはEdge SSRを検討します。アプリ的な操作が中心でSEO要求が薄い管理画面はCSRで十分なことが多いです。記事や商品詳細のように「多くは静的だが、ときどき更新される」ページはISRや再検証付きのキャッシュが合います。</p>
+      <p>近年の実務では、1つに決め打ちするより、ページ単位・コンポーネント単位で混ぜる設計が主流です。静的HTMLを土台にし、必要な部分だけサーバー実行やクライアント実行を足すほど、性能、運用、開発体験のバランスを取りやすくなります。</p>
+    </section>
+
+    <section>
+      <h2>用語の前提</h2>
+      <p>レンダリング形式とは「HTMLやUIをいつ、どこで作るか」です。デプロイ形式とは「生成物をどこに置き、リクエスト時に何を実行するか」です。たとえばSSGはビルド時にHTMLを作り、静的ホスティングやCDNへ置けます。SSRはリクエスト時にサーバーやエッジでHTMLを作るため、実行環境とキャッシュ設計が必要です。</p>
+
+      <figure>
+        <div class="flow-steps" aria-label="レンダリング位置の比較">
+          <div><strong>Build</strong><span>SSG / 静的HTML生成</span></div>
+          <div><strong>Request</strong><span>SSR / Edge SSR / ISR再生成</span></div>
+          <div><strong>Browser</strong><span>CSR / Hydration / PWA</span></div>
+        </div>
+        <figcaption>どの時点でHTMLとJavaScriptを処理するかによって、初回表示、SEO、サーバー負荷、運用コストが変わる。</figcaption>
+      </figure>
+    </section>
+
+    <section>
+      <h2>全体比較</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>形式</th>
+              <th>HTMLを作る場所</th>
+              <th>主なデプロイ先</th>
+              <th>向いている用途</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>CSR</td>
+              <td>ブラウザ</td>
+              <td>静的ホスティング、CDN</td>
+              <td>管理画面、SaaS、ログイン後アプリ</td>
+            </tr>
+            <tr>
+              <td>SSG</td>
+              <td>ビルド時</td>
+              <td>静的ホスティング、CDN、GitHub Pages</td>
+              <td>ブログ、ドキュメント、LP、企業サイト</td>
+            </tr>
+            <tr>
+              <td>SSR</td>
+              <td>リクエスト時のサーバー</td>
+              <td>Node.js、サーバーレス、コンテナ</td>
+              <td>検索流入が必要な動的ページ、認証つきページ</td>
+            </tr>
+            <tr>
+              <td>ISR / 再検証</td>
+              <td>ビルド時 + 期限後に再生成</td>
+              <td>対応フレームワークのホスティング</td>
+              <td>商品詳細、ニュース、CMS記事</td>
+            </tr>
+            <tr>
+              <td>Edge SSR</td>
+              <td>ユーザーに近いエッジ実行環境</td>
+              <td>Edge Functions、Workers</td>
+              <td>地域別表示、A/Bテスト、低遅延が必要なページ</td>
+            </tr>
+            <tr>
+              <td>Islands</td>
+              <td>静的HTML + 必要箇所だけブラウザまたはサーバー</td>
+              <td>静的ホスティング、サーバーレス、Node.js</td>
+              <td>コンテンツ中心だが一部だけインタラクティブなサイト</td>
+            </tr>
+            <tr>
+              <td>RSC</td>
+              <td>サーバーコンポーネントはサーバー、必要箇所はクライアント</td>
+              <td>対応フレームワークのサーバー環境</td>
+              <td>Reactでデータ取得とUI分割を細かく設計するアプリ</td>
+            </tr>
+            <tr>
+              <td>PWA</td>
+              <td>形式ではなく配布・実行拡張</td>
+              <td>通常のWebホスティング + manifest / service worker</td>
+              <td>オフライン対応、ホーム画面追加、アプリ風体験</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>CSR</h2>
+      <p>CSR、Client Side Renderingは、最初にほぼ空のHTMLとJavaScriptを配信し、ブラウザ上で画面を組み立てる方式です。Viteなどでビルドした成果物を静的ファイルとして配信する構成が典型です。</p>
+      <h3>メリット</h3>
+      <ul class="check-list">
+        <li>静的ファイル配信だけで動くため、サーバー運用が軽い。</li>
+        <li>ログイン後の複雑な状態管理や画面遷移を作りやすい。</li>
+        <li>CDNに載せやすく、デプロイ構成が単純になりやすい。</li>
+      </ul>
+      <h3>デメリット</h3>
+      <ul class="check-list">
+        <li>初回表示までにJavaScriptの取得、解析、実行が必要になる。</li>
+        <li>検索エンジンやSNSプレビュー向けのHTMLが弱くなりやすい。</li>
+        <li>低スペック端末ではJavaScript実行の負荷が体感性能に出やすい。</li>
+      </ul>
+      <p>管理画面や社内ツールのように、検索流入より操作性が重要な画面では今でも現実的な選択です。一方、公開ページ全体をCSRだけにすると、SEO、初期表示、メタデータ制御で不利になる場面があります。</p>
+    </section>
+
+    <section>
+      <h2>SSG</h2>
+      <p>SSG、Static Site Generationは、ビルド時に各ページのHTMLを作っておく方式です。生成後はHTML、CSS、JavaScript、画像を静的ファイルとして配信できます。</p>
+      <h3>メリット</h3>
+      <ul class="check-list">
+        <li>リクエスト時にアプリサーバーを動かさないため、速く、落ちにくく、安く運用しやすい。</li>
+        <li>HTMLが最初から存在するため、SEOやSNSプレビューと相性がよい。</li>
+        <li>GitHub Pagesのような静的ホスティングにそのまま載せやすい。</li>
+      </ul>
+      <h3>デメリット</h3>
+      <ul class="check-list">
+        <li>更新のたびにビルドとデプロイが必要になる。</li>
+        <li>ページ数が多いとビルド時間が伸びる。</li>
+        <li>ユーザーごとの認証情報、Cookie、リアルタイム在庫などは静的HTMLだけでは扱いにくい。</li>
+      </ul>
+      <p>このノート集のような静的HTMLサイトはSSGまたは手書き静的サイトに近い構成です。内容が公開情報で、更新頻度が高すぎないなら、最も堅い選択になりやすいです。</p>
+    </section>
+
+    <section>
+      <h2>SSR</h2>
+      <p>SSR、Server Side Renderingは、リクエストごとにサーバーでHTMLを生成し、ブラウザへ返す方式です。ReactではサーバーでHTMLをストリームとして生成し、クライアント側でhydrateしてインタラクティブにするAPIがあります。</p>
+      <h3>メリット</h3>
+      <ul class="check-list">
+        <li>初回レスポンスにHTMLを含められるため、検索流入や共有リンクに強い。</li>
+        <li>ユーザー、Cookie、リクエストヘッダー、地域などに応じた表示を作りやすい。</li>
+        <li>データ更新が頻繁でも、ビルドを待たずに最新情報を返せる。</li>
+      </ul>
+      <h3>デメリット</h3>
+      <ul class="check-list">
+        <li>サーバー実行環境、監視、スケール、キャッシュ設計が必要になる。</li>
+        <li>遅いAPIやDBに引きずられると、HTMLの返却自体が遅くなる。</li>
+        <li>hydration用JavaScriptが多いと、見えているのに操作できない時間が残る。</li>
+      </ul>
+      <p>SSRは「SEOのために万能」というより、リクエスト時の情報をHTMLに反映したい場合の選択肢です。キャッシュできる部分と毎回計算する部分を分けないと、サーバー負荷と遅延が増えます。</p>
+    </section>
+
+    <section>
+      <h2>ISR / 再検証</h2>
+      <p>ISR、Incremental Static Regenerationは、静的生成したページを一定条件で再生成する考え方です。フレームワークによって名前やAPIは違いますが、「普段は静的に速く返し、期限切れやイベントで再生成する」構成と考えると理解しやすいです。</p>
+      <h3>メリット</h3>
+      <ul class="check-list">
+        <li>SSGの速さとSSRの更新追従性をある程度両立できる。</li>
+        <li>大量ページを毎回フルビルドしなくてよい。</li>
+        <li>CMSや商品データの更新に合わせて段階的に反映できる。</li>
+      </ul>
+      <h3>デメリット</h3>
+      <ul class="check-list">
+        <li>対応ホスティングやフレームワークのキャッシュ機構に依存しやすい。</li>
+        <li>古い内容が一定時間表示される可能性がある。</li>
+        <li>「いつ再生成されたか」「失敗時に何を見せるか」の運用設計が必要になる。</li>
+      </ul>
+      <p>在庫、価格、法務文言のように古い表示が許されない情報には注意が必要です。多少の遅延更新を許容できる記事、商品説明、カテゴリ一覧などに向きます。</p>
+    </section>
+
+    <section>
+      <h2>Edge SSR</h2>
+      <p>Edge SSRは、ユーザーに近いエッジロケーションでリクエスト時レンダリングを行う方式です。Node.jsサーバーより低遅延にしやすい一方、実行時間、使用できるAPI、パッケージ互換性に制約が出ることがあります。</p>
+      <h3>メリット</h3>
+      <ul class="check-list">
+        <li>ユーザーに近い場所でHTMLを作れるため、地域差のあるサービスで遅延を抑えやすい。</li>
+        <li>A/Bテスト、リダイレクト、地域別コンテンツ、軽い認証分岐と相性がよい。</li>
+        <li>CDNキャッシュと組み合わせると、動的処理と高速配信を両立しやすい。</li>
+      </ul>
+      <h3>デメリット</h3>
+      <ul class="check-list">
+        <li>Node.js前提のライブラリがそのまま動かない場合がある。</li>
+        <li>重いDB接続や長時間処理には向きにくい。</li>
+        <li>ローカル開発、ログ、監視、障害調査が通常のサーバーより複雑になることがある。</li>
+      </ul>
+      <p>「全ページをEdgeでSSRする」より、低遅延が効く入口ページや軽いパーソナライズに絞る方が扱いやすいです。</p>
+    </section>
+
+    <section>
+      <h2>Islands Architecture</h2>
+      <p>Islands Architectureは、ページの大半を静的HTMLとして出し、検索ボックス、カルーセル、カートなど必要な部品だけJavaScriptでhydrateする考え方です。Astroはこの考え方を中心にしたフレームワークです。</p>
+      <h3>メリット</h3>
+      <ul class="check-list">
+        <li>ページ全体をSPA化しないため、クライアントJavaScriptを減らしやすい。</li>
+        <li>重要な静的本文を先に表示し、操作部品だけ後から読み込める。</li>
+        <li>コンテンツサイトに一部だけリッチなUIを足す構成と相性がよい。</li>
+      </ul>
+      <h3>デメリット</h3>
+      <ul class="check-list">
+        <li>島同士の状態共有が増えると設計が難しくなる。</li>
+        <li>アプリ全体が高度に連動する画面では、通常のSPAやSSRアプリの方が自然な場合がある。</li>
+        <li>チームが従来のSPA前提だと、どこをhydrateするかの設計に慣れが必要になる。</li>
+      </ul>
+      <p>ブログ、メディア、ECの商品ページ、ドキュメントのように「読む部分が主役で、一部だけ動く」サイトでは強力です。</p>
+    </section>
+
+    <section>
+      <h2>React Server Components</h2>
+      <p>React Server Components、RSCは、Reactコンポーネントをサーバー側で実行するものとクライアント側で実行するものに分ける仕組みです。Next.js App Routerでは、レイアウトやページは標準でServer Componentsとして扱われ、ブラウザAPIやイベント処理が必要な部分にClient Componentsを使います。</p>
+      <h3>メリット</h3>
+      <ul class="check-list">
+        <li>DBや内部APIに近い場所でデータ取得し、不要なクライアントJavaScriptを減らしやすい。</li>
+        <li>ページ全体ではなくコンポーネント単位でサーバーとクライアントの責務を分けられる。</li>
+        <li>ストリーミングやキャッシュと組み合わせると、重い部分を待たせず段階的に表示できる。</li>
+      </ul>
+      <h3>デメリット</h3>
+      <ul class="check-list">
+        <li>サーバーで動くコードとブラウザで動くコードの境界を意識する必要がある。</li>
+        <li>対応フレームワークの設計思想に依存しやすい。</li>
+        <li>従来のReact SPAだけを知っている場合、データ取得、キャッシュ、コンポーネント分割の学習コストがある。</li>
+      </ul>
+      <p>Reactで大きなアプリを作る場合、RSCはSSRの単なる別名ではありません。ページ全体のレンダリング方式ではなく、コンポーネントの実行場所を分ける設計要素として見るのが適切です。</p>
+    </section>
+
+    <section>
+      <h2>PWA</h2>
+      <p>PWA、Progressive Web Appは、レンダリング方式ではなく、Webアプリをインストール可能にしたり、オフライン体験を提供したりする配布・実行面の拡張です。manifestやservice workerを使い、通常のWebサイトをアプリ風に扱えるようにします。</p>
+      <h3>メリット</h3>
+      <ul class="check-list">
+        <li>アプリストアに限らずWebから配布でき、ホーム画面やDockから起動できる場合がある。</li>
+        <li>service workerでキャッシュやオフライン表示を設計できる。</li>
+        <li>同じWebコードベースをアプリ風の体験に近づけられる。</li>
+      </ul>
+      <h3>デメリット</h3>
+      <ul class="check-list">
+        <li>ブラウザやOSによって対応機能とインストール体験が異なる。</li>
+        <li>キャッシュ戦略を間違えると、古い画面や古いJavaScriptを配り続ける事故が起きる。</li>
+        <li>ネイティブアプリと同じ権限やUXを常に実現できるわけではない。</li>
+      </ul>
+      <p>PWAはCSR、SSG、SSRのどれとも組み合わせられます。オフライン要件、再訪頻度、通知、ホーム画面起動が重要な場合に検討します。</p>
+    </section>
+
+    <section>
+      <h2>選び方</h2>
+      <ol class="roadmap">
+        <li><strong>公開コンテンツ中心ならSSG。</strong> ブログ、ドキュメント、LP、会社サイトはまず静的化を考える。</li>
+        <li><strong>ログイン後の操作中心ならCSR。</strong> SEOが不要でAPI経由の状態変化が主役なら、静的配信のSPAで十分なことが多い。</li>
+        <li><strong>リクエストごとにHTMLを変えるならSSR。</strong> Cookie、認証、地域、検索条件、在庫などを初回HTMLへ反映したい場合に使う。</li>
+        <li><strong>静的だが更新も必要ならISR。</strong> 古い表示を短時間許容できるかを先に決める。</li>
+        <li><strong>本文中心で一部だけ動くならIslands。</strong> JavaScriptをページ全体へ広げない。</li>
+        <li><strong>Reactで大規模化するならRSCも検討。</strong> サーバーでよい処理をクライアントへ送らない設計にする。</li>
+        <li><strong>アプリ風配布が必要ならPWAを足す。</strong> レンダリング方式とは別軸で検討する。</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>判断表</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>条件</th>
+              <th>有力候補</th>
+              <th>避けたい選択</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>SEOが重要で内容があまり変わらない</td>
+              <td>SSG、Islands</td>
+              <td>CSRのみ</td>
+            </tr>
+            <tr>
+              <td>ログイン後の業務アプリ</td>
+              <td>CSR、SSR + CSR</td>
+              <td>全画面SSGのみ</td>
+            </tr>
+            <tr>
+              <td>商品ページが大量にあり、ときどき更新される</td>
+              <td>ISR、SSG + on-demand再検証</td>
+              <td>毎回フルビルドだけに依存</td>
+            </tr>
+            <tr>
+              <td>地域別表示や軽いパーソナライズが必要</td>
+              <td>Edge SSR、SSR</td>
+              <td>静的HTMLだけで無理に分岐</td>
+            </tr>
+            <tr>
+              <td>ネットワーク不安定な環境でも使わせたい</td>
+              <td>PWA + 適切なキャッシュ</td>
+              <td>キャッシュ戦略なしのSPA</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>参照</h2>
+      <ul class="reference-list">
+        <li><a href="https://vite.dev/guide/static-deploy">Vite: Deploying a Static Site</a></li>
+        <li><a href="https://nextjs.org/docs/app/guides/static-exports">Next.js: Static Exports</a></li>
+        <li><a href="https://nextjs.org/docs/app/getting-started/server-and-client-components">Next.js: Server and Client Components</a></li>
+        <li><a href="https://react.dev/reference/react-dom/server/renderToPipeableStream">React: renderToPipeableStream</a></li>
+        <li><a href="https://docs.astro.build/en/concepts/islands/">Astro Docs: Islands architecture</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Guides/Making_PWAs_installable">MDN: Making PWAs installable</a></li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>
