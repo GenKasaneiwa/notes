@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>フロントエンドで今人気の技術スタックは？ | 技術質問ノート</title>
+  <meta name="description" content="2026年6月時点で人気のあるフロントエンド技術スタックを、React、TypeScript、Next.js、Vite、Tailwind CSSなどの採用傾向から整理する。">
+  <link rel="stylesheet" href="../../styles/site.css">
+</head>
+<body>
+  <main class="article">
+    <header class="article-header">
+      <p class="article-meta"><time datetime="2026-06-15">2026-06-15</time> / Web</p>
+      <h1>フロントエンドで今人気の技術スタックは？</h1>
+      <p>2026年6月15日時点で「人気があり、実務でも選びやすい」フロントエンド構成を、調査データと公式ドキュメントをもとに整理する。</p>
+    </header>
+
+    <figure class="article-infographic">
+      <img src="../../images/web/frontend-popular-stack/infographic.png" alt="人気のフロントエンド技術スタックはTypeScriptとReactを中心に、用途に応じてNext.js、React Router、Vite、Tailwind CSSを組み合わせるという要点">
+      <figcaption>人気の中心はTypeScriptとReactだが、最終的な選択はSEO、運用、チーム経験、画面の複雑さで変わる。</figcaption>
+    </figure>
+
+    <section>
+      <h2>結論</h2>
+      <p>今もっとも無難に人気スタックと呼びやすいのは、<strong>TypeScript + React + Next.js + Tailwind CSS</strong>です。公開ページ、認証付きアプリ、API連携、SSR/SSGの使い分けまで1つの枠組みで扱いやすく、採用事例と学習資源も多いからです。</p>
+      <p>ただし、すべてのプロジェクトでNext.jsが最適という意味ではありません。管理画面や社内ツールのようにSEOが重要でない場合は、<strong>TypeScript + React + Vite + React Router</strong>の方が軽く扱いやすいことがあります。コンテンツ中心のサイトではAstro、Vue文化のチームではNuxt、軽量なUI志向ならSvelteKitも候補になります。</p>
+    </section>
+
+    <section>
+      <h2>人気の見方</h2>
+      <p>ここでの「人気」は、求人・採用数そのものではなく、公開調査での利用実績、実務利用、公式ドキュメント上の推奨、周辺ツールの成熟度から見たものです。Stack Overflow Developer Survey 2025では、JavaScript、HTML/CSS、TypeScriptが主要言語として上位に出ており、Web frameworks and technologiesでもReact、Next.js、Vue.jsが中心的な選択肢として扱われています。</p>
+      <p>State of JS 2024では、仕事で使うフロントエンドフレームワークとしてReactが最上位、Vue.jsとAngularが続き、Svelteは利用増と高い好意的評価が目立ちます。ビルドツールではViteが急速に伸び、仕事での利用数もwebpackにほぼ並んでいます。</p>
+    </section>
+
+    <section>
+      <h2>本命スタック</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>層</th>
+              <th>人気の選択肢</th>
+              <th>理由</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>言語</td>
+              <td>TypeScript</td>
+              <td>JavaScriptのエコシステムを使いながら、型で変更リスクを下げられる。チーム開発で特に強い。</td>
+            </tr>
+            <tr>
+              <td>UI</td>
+              <td>React</td>
+              <td>利用者、情報量、周辺ライブラリが大きく、公式にもフレームワーク利用が推奨されている。</td>
+            </tr>
+            <tr>
+              <td>アプリ基盤</td>
+              <td>Next.js</td>
+              <td>ルーティング、SSR、SSG、サーバー処理、画像最適化などをまとめて扱える。</td>
+            </tr>
+            <tr>
+              <td>軽量なSPA基盤</td>
+              <td>Vite + React Router</td>
+              <td>高速な開発体験と単純な静的配信に向く。SSRが不要な画面では過剰な仕組みを避けられる。</td>
+            </tr>
+            <tr>
+              <td>スタイリング</td>
+              <td>Tailwind CSS / CSS Modules</td>
+              <td>Tailwindはユーティリティ中心で実装速度が出やすい。CSS Modulesは局所的なCSS管理に向く。</td>
+            </tr>
+            <tr>
+              <td>テスト</td>
+              <td>Vitest / Testing Library / Playwright</td>
+              <td>単体、コンポーネント、E2Eを分けて検証しやすい。Vite系の構成とも相性がよい。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>用途別の選び方</h2>
+      <ol class="roadmap">
+        <li><strong>公開サイト、SEO、CMS連携が重要ならNext.js。</strong> ページごとにSSG、SSR、動的処理を選べるため、プロダクトサイトやメディア、ECに向きます。</li>
+        <li><strong>管理画面、社内ツール、SaaSの操作画面ならVite + React Router。</strong> 検索流入より操作性と開発速度が重要なら、軽いSPA構成で十分なことが多いです。</li>
+        <li><strong>コンテンツ中心で一部だけ動けばよいならAstro。</strong> JavaScriptを必要箇所だけに絞りやすく、ブログ、ドキュメント、LPと相性がよいです。</li>
+        <li><strong>チームがVueに強いならVue + Nuxt。</strong> React系に寄せるより、既存知識とコンポーネント資産を活かした方が速い場合があります。</li>
+        <li><strong>小さく高速なUIを重視するならSvelteKit。</strong> 採用母数はReactより小さい一方、State of JSでは好意的評価が高く、選ぶ理由はあります。</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>避けたい決め方</h2>
+      <p>「人気だからNext.js」「軽いからVite」のように名前だけで決めると失敗しやすいです。判断軸は、SEOが必要か、リクエストごとにHTMLを変えるか、認証や権限が複雑か、チームが運用できるか、デプロイ先に合うかです。</p>
+      <p>推測としての現場感では、2026年時点の新規開発ではTypeScriptを外す理由は少なく、React系を選ぶと採用・引き継ぎ・ライブラリ選定で困りにくいです。一方、既存チームがVueやSvelteに熟練しているなら、流行に合わせてReactへ寄せるより、既存の強みを活かす方が合理的です。</p>
+    </section>
+
+    <section>
+      <h2>迷ったときの初期構成</h2>
+      <p>個人開発や小規模チームで迷うなら、まずは次のどちらかに寄せると判断しやすくなります。</p>
+      <ul class="check-list">
+        <li><strong>公開ページもアプリ機能もある:</strong> TypeScript + React + Next.js + Tailwind CSS + Playwright</li>
+        <li><strong>ログイン後アプリ中心:</strong> TypeScript + React + Vite + React Router + TanStack Query + Tailwind CSS</li>
+        <li><strong>記事・ドキュメント中心:</strong> Astro + TypeScript + 必要な部分だけReactまたはVue</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>参照</h2>
+      <ul class="reference-list">
+        <li><a href="https://survey.stackoverflow.co/2025/technology">Stack Overflow Developer Survey 2025: Technology</a></li>
+        <li><a href="https://2024.stateofjs.com/en-US/libraries/front-end-frameworks/">State of JavaScript 2024: Front-end Frameworks</a></li>
+        <li><a href="https://2024.stateofjs.com/en-US/libraries/meta-frameworks/">State of JavaScript 2024: Meta-Frameworks</a></li>
+        <li><a href="https://2024.stateofjs.com/en-US/libraries/build_tools/">State of JavaScript 2024: Build Tools</a></li>
+        <li><a href="https://2024.stateofcss.com/en-US/tools/">State of CSS 2024: Libraries &amp; Tools</a></li>
+        <li><a href="https://react.dev/learn/creating-a-react-app">React Docs: Creating a React App</a></li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>
