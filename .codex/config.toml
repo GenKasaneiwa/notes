@@ -1,0 +1,8 @@
+# notes リポジトリ用 Codex 設定
+# 前提: ~/.codex/config.toml で trust_level = "trusted"
+
+# サンドボックスなし（ワークスペース外の読み書き、git、ネットワークも確認なし）
+sandbox_mode = "danger-full-access"
+
+# 操作前の承認ダイアログを出さない
+approval_policy = "never"
