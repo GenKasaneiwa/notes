@@ -6,20 +6,20 @@
   <title>Notes</title>
   <meta name="description" content="疑問、学び、自分の考えをMarkdown記事として蓄積するノート集">
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.conditional.min.css">
   <link rel="stylesheet" href="./styles/site.css">
   <script type="module" src="./scripts/dashboard.js"></script>
 </head>
 <body>
-  <main class="dashboard-shell">
+  <main class="pico dashboard-shell">
     <aside class="dashboard-sidebar" aria-label="ノート操作">
       <div class="workspace-mark">
         <span>Notes</span>
-        <strong>Knowledge base</strong>
       </div>
 
       <search class="note-search">
-        <label for="note-search">検索</label>
-        <input id="note-search" name="q" type="search" data-note-search autocomplete="off" placeholder="タイトル、本文、カテゴリ">
+        <label class="visually-hidden" for="note-search">検索</label>
+        <input id="note-search" name="q" type="search" data-note-search autocomplete="off" placeholder="検索">
       </search>
 
       <section class="sidebar-list" aria-labelledby="sidebar-list-title">
@@ -51,12 +51,9 @@
     </aside>
 
     <section class="dashboard-workspace" aria-labelledby="notes-title">
+      <h1 id="notes-title" hidden>Notes</h1>
       <section class="panel panel--main">
         <div class="panel-heading">
-          <div>
-            <h1 id="notes-title">ノート</h1>
-            <p>検索とカテゴリで絞り込めます。行をクリックすると詳細記事を開きます。</p>
-          </div>
           <span data-result-count>4 items</span>
         </div>
 
