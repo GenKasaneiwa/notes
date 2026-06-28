@@ -3,20 +3,18 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>技術質問ノート</title>
-  <meta name="description" content="疑問をすぐ記事化して蓄積するための静的HTMLノート集">
+  <title>Notes</title>
+  <meta name="description" content="疑問、学び、自分の考えを静的HTMLの記事として蓄積するノート集">
   <link rel="stylesheet" href="./styles/site.css">
 </head>
 <body>
-  <header class="site-header">
-    <div class="site-header__inner">
-      <p class="site-kicker">Instant Question Notes</p>
-      <h1>技術質問ノート</h1>
-      <p class="site-lead">思いついた疑問をHTML記事として残し、あとから読み返せる形にするためのノート集です。</p>
-    </div>
-  </header>
-
   <main class="site-main">
+    <section class="workspace-title" aria-labelledby="workspace-title">
+      <p class="workspace-kicker">Workspace</p>
+      <h1 id="workspace-title">Notes</h1>
+      <p>疑問、学び、自分の考えをあとから読み返せる形で残すためのノート集です。</p>
+    </section>
+
     <section class="section">
       <div class="section__heading">
         <h2>最近のノート</h2>
@@ -65,14 +63,16 @@
     <section class="section section--muted">
       <div class="section__heading">
         <h2>カテゴリ</h2>
-        <p>記事が増えたら、テーマごとにカテゴリを増やします。</p>
+        <p>技術に限らず、気になったことをテーマごとに増やします。</p>
       </div>
 
       <ul class="category-list">
-        <li>AI / LLM</li>
         <li>Web</li>
-        <li>開発環境</li>
-        <li>インフラ</li>
+        <li>AI / LLM</li>
+        <li>読書</li>
+        <li>仕事</li>
+        <li>暮らし</li>
+        <li>アイデア</li>
       </ul>
     </section>
   </main>

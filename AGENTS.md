@@ -1,12 +1,13 @@
-# 技術質問ノート運用ルール
+# ノート運用ルール
 
-このリポジトリは、疑問を静的HTMLの記事として蓄積するノート集です。ビルド工程は置かず、GitHub Pages でそのまま公開できるHTML/CSS/画像だけを管理します。
+このリポジトリは、疑問、学び、自分の考えを静的HTMLの記事として蓄積するノート集です。
+ビルド工程は置かず、GitHub Pages でそのまま公開できるHTML/CSS/画像だけを管理します。
 
 ## 「質問」を含む依頼から記事を作るとき
 
 - ユーザーの依頼文に「質問」という語が含まれる場合は、1テーマ1ページのHTML記事を作る。文頭である必要はない。
 - ただし、ユーザーが「質問という語の扱いを変えたい」「質問トリガーを直したい」のように運用ルール自体を相談している場合は、記事化せずにルール変更として扱う。
-- 記事は適切なカテゴリディレクトリを作り、その中の `index.html` として保存する。例: `web/http-cache/index.html`。
+- 記事は適切なカテゴリディレクトリを作り、その中の `index.html` として保存する。例: `web/http-cache/index.html`、`books/story-thinking/index.html`、`life/morning-routine/index.html`。
 - `templates/article.html` の構成を基準にし、必要に応じて本文、図解、コード例を追加する。
 - 記事ヘッダー直後（「結論」の前）に、記事内容を要約したインフォグラフィックを入れる。Cursor の画像生成機能で作成し、`images/<カテゴリ>/<スラッグ>/infographic.png` に保存する。例: `web/http-cache/index.html` なら `images/web/http-cache/infographic.png`。HTML では `figure.article-infographic` で `<img>` と `figcaption` を書き、`alt` に記事の要点を入れる。
 - `index.html` の「最近のノート」へ新しい記事カードを追加する。新しい記事を上に置く。
