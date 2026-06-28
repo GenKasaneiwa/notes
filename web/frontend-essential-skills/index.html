@@ -1,121 +1,29 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>フロントエンドの必須スキルは？</title>
   <meta name="description" content="フロントエンド開発で優先して身につけるべき基礎スキルを、HTML/CSS/JavaScript、アクセシビリティ、性能、テスト、設計の観点で整理する。">
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../../styles/site.css">
+  <script type="module" src="../../scripts/article.js"></script>
 </head>
 <body>
   <main class="article">
+    <p class="article-back"><a href="../../">Notes</a></p>
     <header class="article-header">
-      <p class="article-meta"><time datetime="2026-06-13">2026-06-13</time> / Web</p>
-      <h1>フロントエンドの必須スキルは？</h1>
-      <p>流行のライブラリ名ではなく、どの現場でも効く土台として何を優先すべきかを整理する。</p>
+      <p class="article-meta"><time data-article-date datetime="2026-06-13">2026-06-13</time> / <span data-article-category>Web</span></p>
+      <h1 data-article-title>フロントエンドの必須スキルは？</h1>
+      <p data-article-description>フロントエンド開発で優先して身につけるべき基礎スキルを、HTML/CSS/JavaScript、アクセシビリティ、性能、テスト、設計の観点で整理する。</p>
     </header>
 
-    <section>
-      <h2>結論</h2>
-      <p>必須スキルは、HTML/CSS/JavaScriptを正しく使う力、ブラウザとネットワークの理解、アクセシビリティ、性能改善、状態管理を含むUI設計、Git、テスト、デバッグ、セキュリティの基礎です。ReactやVueなどのフレームワークは重要ですが、必須スキルの中心ではなく、これらの基礎を実装へ落とし込むための道具として扱うのが安全です。</p>
-    </section>
+    <figure class="article-infographic" data-article-infographic hidden>
+      <img data-article-infographic-img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="">
+      <figcaption data-article-infographic-caption></figcaption>
+    </figure>
 
-    <section>
-      <h2>まず押さえる順番</h2>
-      <div class="skill-grid" aria-label="フロントエンド必須スキルの分類">
-        <article class="skill-card">
-          <h3>1. 画面を作る基礎</h3>
-          <ul>
-            <li>意味のあるHTMLを書く</li>
-            <li>レスポンシブなCSSを組む</li>
-            <li>JavaScriptでDOM、イベント、非同期処理を扱う</li>
-          </ul>
-        </article>
-        <article class="skill-card">
-          <h3>2. 品質を守る基礎</h3>
-          <ul>
-            <li>アクセシビリティを仕様として扱う</li>
-            <li>Core Web Vitalsなどの体感性能を見る</li>
-            <li>フォーム、エラー、ローディング状態を設計する</li>
-          </ul>
-        </article>
-        <article class="skill-card">
-          <h3>3. チーム開発の基礎</h3>
-          <ul>
-            <li>Gitで変更を小さく管理する</li>
-            <li>テストで壊れやすい振る舞いを固定する</li>
-            <li>レビューしやすいコンポーネントに分ける</li>
-          </ul>
-        </article>
-      </div>
-    </section>
-
-    <section>
-      <h2>背景</h2>
-      <p>フロントエンドは、見た目を作るだけの仕事ではありません。ユーザー入力、API通信、認証、エラー処理、端末差、ブラウザ差、アクセシビリティ、性能、保守性が同じ画面に集まります。そのため、特定のフレームワークを覚えるだけでは不足します。</p>
-      <p>一方で、すべてを同時に深掘りする必要もありません。最初は「ブラウザで正しく動くUIを、読めるコードで、安全に変更できる」状態を目標にすると優先順位を決めやすくなります。</p>
-    </section>
-
-    <section>
-      <h2>スキル別の要点</h2>
-      <h3>HTML</h3>
-      <p>HTMLは文書構造とUIの意味を表します。見出し、リスト、ボタン、フォーム、ラベル、リンクを適切に選べることが、アクセシビリティやテストしやすさの土台になります。</p>
-
-      <h3>CSS</h3>
-      <p>CSSでは、レイアウト、余白、状態、レスポンシブ対応を安定して扱う力が必要です。Flexbox、Grid、カスケード、詳細度、メディアクエリ、コンテナに応じた設計を理解しておくと、画面崩れを減らせます。</p>
-
-      <h3>JavaScript / TypeScript</h3>
-      <p>JavaScriptでは、値と参照、関数、モジュール、非同期処理、エラー処理、DOMイベントを理解します。TypeScriptは必須の言語仕様ではありませんが、チーム開発では型で変更リスクを下げる実用性が高いため、早めに学ぶ価値があります。</p>
-
-      <h3>アクセシビリティ</h3>
-      <p>アクセシビリティは後付けの配慮ではなく、UIの品質要件です。キーボード操作、フォーカス順、代替テキスト、色だけに依存しない表現、フォームエラーの伝え方を設計段階から確認します。</p>
-
-      <h3>性能</h3>
-      <p>性能では、表示開始の速さ、操作への反応、レイアウトの安定性を見る必要があります。画像サイズ、JavaScriptの量、レンダリングの詰まり、キャッシュ、遅延読み込みを点検できると、ユーザー体験を直接改善できます。</p>
-
-      <h3>フレームワーク</h3>
-      <p>React、Vue、Svelte、Next.jsなどは、コンポーネント分割、状態管理、ルーティング、データ取得を整理するための道具です。ひとつを深く使えることは重要ですが、HTML/CSS/JavaScriptの理解が浅いまま使うと、問題の原因を切り分けにくくなります。</p>
-    </section>
-
-    <section>
-      <h2>実務で差が出る補助スキル</h2>
-      <ul class="check-list">
-        <li>Gitでブランチ、差分、履歴、コンフリクト解消を扱える</li>
-        <li>DevToolsでDOM、CSS、ネットワーク、パフォーマンスを調査できる</li>
-        <li>単体テスト、コンポーネントテスト、E2Eテストの役割を分けられる</li>
-        <li>APIの契約、HTTPステータス、認証、CORS、キャッシュを説明できる</li>
-        <li>XSS、CSRF、依存パッケージの脆弱性など基本的なリスクを避けられる</li>
-        <li>デザイン意図を読み取り、余白、階層、状態、文言まで実装に反映できる</li>
-      </ul>
-    </section>
-
-    <section>
-      <h2>学習ロードマップ</h2>
-      <ol class="roadmap">
-        <li><strong>静的な1ページを作る。</strong> HTMLとCSSだけで、スマホでも崩れないページを作る。</li>
-        <li><strong>フォームを作る。</strong> 入力、バリデーション、エラー表示、送信中の状態を実装する。</li>
-        <li><strong>APIとつなぐ。</strong> fetch、ローディング、失敗時の再試行、空状態を扱う。</li>
-        <li><strong>アクセシビリティを確認する。</strong> キーボードだけで操作し、スクリーンリーダーに伝わる構造にする。</li>
-        <li><strong>性能を測る。</strong> LighthouseやDevToolsで遅い原因を見つけ、画像やJavaScript量を調整する。</li>
-        <li><strong>フレームワークで作り直す。</strong> 同じ題材をReactなどで作り、素のWeb技術との差分を理解する。</li>
-      </ol>
-    </section>
-
-    <section>
-      <h2>推測としての現場感</h2>
-      <p>ここからは一般的な求人・開発現場の傾向に基づく推測です。多くのチームでは、Reactなどのフレームワーク経験、TypeScript、Git、テスト、アクセシビリティや性能への意識が評価されやすい一方、採用後に伸びやすい人は、特定ツールの暗記よりもブラウザの基本動作を説明できる人です。</p>
-    </section>
-
-    <section>
-      <h2>参照</h2>
-      <ul class="reference-list">
-        <li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core">MDN Web Docs: Core learning modules</a></li>
-        <li><a href="https://web.dev/learn/performance">web.dev: Learn Performance</a></li>
-        <li><a href="https://www.w3.org/TR/WCAG22/">W3C: Web Content Accessibility Guidelines (WCAG) 2.2</a></li>
-        <li><a href="https://www.typescriptlang.org/docs/handbook/intro.html">TypeScript Handbook</a></li>
-        <li><a href="https://git-scm.com/book/en/v2">Pro Git book</a></li>
-      </ul>
-    </section>
+    <article data-article-root data-markdown="./article.md"></article>
   </main>
 </body>
 </html>

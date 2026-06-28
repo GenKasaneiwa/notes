@@ -1,163 +1,29 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>バックエンドで今流行りの構成は？</title>
   <meta name="description" content="2026年6月時点で流行りのバックエンド構成を、API、アプリ、データベース、キャッシュ、Docker、クラウド、監視に分けて小学生にもわかるように整理する。">
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../../styles/site.css">
+  <script type="module" src="../../scripts/article.js"></script>
 </head>
 <body>
   <main class="article">
+    <p class="article-back"><a href="../../">Notes</a></p>
     <header class="article-header">
-      <p class="article-meta"><time datetime="2026-06-16">2026-06-16</time> / Web</p>
-      <h1>バックエンドで今流行りの構成は？</h1>
-      <p>2026年6月16日時点でよく選ばれるバックエンド構成を、むずかしい言葉をできるだけ使わずに整理する。小学生向けに、アプリの裏側を「お店のしくみ」にたとえて説明する。</p>
+      <p class="article-meta"><time data-article-date datetime="2026-06-16">2026-06-16</time> / <span data-article-category>Web</span></p>
+      <h1 data-article-title>バックエンドで今流行りの構成は？</h1>
+      <p data-article-description>2026年6月時点で流行りのバックエンド構成を、API、アプリ、データベース、キャッシュ、Docker、クラウド、監視に分けて小学生にもわかるように整理する。</p>
     </header>
 
-    <figure class="article-infographic">
-      <img src="../../images/web/backend-popular-stack/infographic.png" alt="バックエンドの流行りの構成はAPI、アプリ、PostgreSQL、Redis、Docker、AWSやKubernetes、OpenTelemetryを組み合わせるという要点">
-      <figcaption>バックエンドは、入口、係、倉庫、近道、箱、雲の土地、見守り係を組み合わせて作る。</figcaption>
+    <figure class="article-infographic" data-article-infographic hidden>
+      <img data-article-infographic-img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="">
+      <figcaption data-article-infographic-caption></figcaption>
     </figure>
 
-    <section>
-      <h2>結論</h2>
-      <p>今の流行りをひとことで言うと、<strong>API + アプリ本体 + PostgreSQL + Redis + Docker + クラウド + 見守り</strong>です。小さく始めるなら、まずは<strong>API、PostgreSQL、Docker</strong>の3つを覚えると全体が見えやすいです。</p>
-      <p>言語やフレームワークは、チームや目的で変わります。よく見る組み合わせは、<strong>TypeScript/Node.js + ExpressやNestJS</strong>、<strong>Python + FastAPIやDjango</strong>、<strong>Java + Spring Boot</strong>、<strong>Go</strong>です。</p>
-    </section>
-
-    <section>
-      <h2>お店でたとえる</h2>
-      <p>バックエンドは、画面にはあまり見えないけれど、アプリを動かす裏側の仕事をしています。お店で考えるとわかりやすいです。</p>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>役割</th>
-              <th>たとえ</th>
-              <th>よく使われるもの</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>API</td>
-              <td>お客さんの注文を受ける入口</td>
-              <td>REST API、GraphQL、gRPC</td>
-            </tr>
-            <tr>
-              <td>アプリ本体</td>
-              <td>注文を見て仕事をする係</td>
-              <td>Node.js、Python、Java、Go</td>
-            </tr>
-            <tr>
-              <td>データベース</td>
-              <td>大事な情報をしまう倉庫</td>
-              <td>PostgreSQL、MySQL、MongoDB</td>
-            </tr>
-            <tr>
-              <td>キャッシュ</td>
-              <td>よく使うものを近くに置く近道</td>
-              <td>Redis</td>
-            </tr>
-            <tr>
-              <td>コンテナ</td>
-              <td>アプリをどこでも動く箱に入れる</td>
-              <td>Docker</td>
-            </tr>
-            <tr>
-              <td>動かす場所</td>
-              <td>お店を置く大きな土地</td>
-              <td>AWS、Google Cloud、Azure、Kubernetes</td>
-            </tr>
-            <tr>
-              <td>監視</td>
-              <td>お店の様子を見て問題に気づく係</td>
-              <td>OpenTelemetry、Prometheus、Grafana</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <section>
-      <h2>流行りの基本形</h2>
-      <ol class="roadmap">
-        <li><strong>画面やアプリがAPIに注文する。</strong> 「このユーザーの情報を見せて」「商品を買いたい」のようなお願いを送ります。</li>
-        <li><strong>バックエンドのアプリが考える。</strong> ルールを確認し、ログインしているか、買ってよいか、どのデータが必要かを決めます。</li>
-        <li><strong>PostgreSQLに大事な情報を保存する。</strong> ユーザー、注文、支払い、設定など、消えてはいけない情報をしまいます。</li>
-        <li><strong>Redisによく使う情報を置く。</strong> 毎回倉庫まで取りに行くと遅いものを、近くに置いてすばやく返します。</li>
-        <li><strong>Dockerで箱に入れて運ぶ。</strong> 自分のパソコン、テスト環境、本番環境で動き方が変わりにくくなります。</li>
-        <li><strong>クラウドやKubernetesで動かす。</strong> 人が増えたら台数を増やし、壊れたら別の場所で動かすようにします。</li>
-        <li><strong>OpenTelemetryなどで見守る。</strong> 遅いところ、失敗したところ、どのお願いで問題が起きたかを見つけやすくします。</li>
-      </ol>
-    </section>
-
-    <section>
-      <h2>数字で見る人気</h2>
-      <p>Stack Overflow Developer Survey 2025では、言語としてJavaScript、SQL、Python、TypeScript、Java、Goが目立ちます。バックエンド技術ではNode.js、Express、FastAPI、Spring Boot、Flask、Djangoが調査項目に並び、データベースではPostgreSQLとRedis、ツールではDockerとKubernetesが大きな選択肢として出ています。</p>
-      <p>CNCFの2025年Annual Cloud Native Surveyでは、コンテナ利用者の82%がKubernetesを本番環境で使っていると発表されています。つまり、大きいサービスでは「Dockerの箱をKubernetesでたくさん並べて動かす」考え方がかなり普通になっています。</p>
-      <p>OpenTelemetryは、トレース、メトリクス、ログを集めるためのベンダー中立な仕組みとして公式ドキュメントで説明されています。これは「どこの見守りサービスを使っても、アプリ側の見守り方をそろえやすい」という意味です。</p>
-    </section>
-
-    <section>
-      <h2>よくある構成</h2>
-      <div class="skill-grid">
-        <div class="skill-card">
-          <h3>小さく始める</h3>
-          <ul>
-            <li>TypeScript + Node.js</li>
-            <li>REST API</li>
-            <li>PostgreSQL</li>
-            <li>Docker Compose</li>
-          </ul>
-        </div>
-        <div class="skill-card">
-          <h3>AIやデータにも強くする</h3>
-          <ul>
-            <li>Python + FastAPI</li>
-            <li>PostgreSQL</li>
-            <li>Redis</li>
-            <li>ジョブキュー</li>
-          </ul>
-        </div>
-        <div class="skill-card">
-          <h3>会社の大きなサービス</h3>
-          <ul>
-            <li>Java + Spring Boot</li>
-            <li>PostgreSQL</li>
-            <li>Docker</li>
-            <li>Kubernetes + OpenTelemetry</li>
-          </ul>
-        </div>
-      </div>
-      <p>推測としての現場感では、新しく学ぶ人はTypeScript/Node.jsかPython/FastAPIから始めると入りやすいです。一方で、大きな会社や長く運用する業務システムではJava/Spring BootやGoも強い候補です。</p>
-      <p>もう1つの選び方として、短い処理だけを動かすならサーバーレスもあります。AWS Lambdaのようなサービスは、サーバーを自分で用意せずにコードを動かせるので、画像の加工、通知、定期実行のような小さな仕事に向いています。</p>
-    </section>
-
-    <section>
-      <h2>最初に作るなら</h2>
-      <p>迷ったら、次の順番で作るのがわかりやすいです。</p>
-      <ol class="roadmap">
-        <li><strong>APIを1つ作る。</strong> 例: 「こんにちは」を返すAPI。</li>
-        <li><strong>PostgreSQLにつなぐ。</strong> 例: 名前を保存して、あとで取り出す。</li>
-        <li><strong>Dockerで動かす。</strong> 例: アプリとDBを同じ手順で起動する。</li>
-        <li><strong>ログを見る。</strong> 例: どのAPIが呼ばれたか、エラーが出たかを見る。</li>
-        <li><strong>必要になってからRedisやKubernetesを足す。</strong> 最初から全部入れると、勉強するものが多すぎます。</li>
-      </ol>
-      <p>大事なのは、流行りの名前を全部覚えることではありません。<strong>入口、仕事をする係、倉庫、箱、動かす場所、見守り</strong>という役割を理解することです。役割がわかれば、新しい名前が出てきても「これはどの係かな？」と考えられます。</p>
-    </section>
-
-    <section>
-      <h2>参照</h2>
-      <ul class="reference-list">
-        <li><a href="https://survey.stackoverflow.co/2025/technology">Stack Overflow Developer Survey 2025: Technology</a></li>
-        <li><a href="https://www.cncf.io/announcements/2026/01/20/kubernetes-established-as-the-de-facto-operating-system-for-ai-as-production-use-hits-82-in-2025-cncf-annual-cloud-native-survey/">CNCF: Kubernetes Established as the De Facto Operating System for AI as Production Use Hits 82% in 2025 CNCF Annual Cloud Native Survey</a></li>
-        <li><a href="https://docs.docker.com/get-started/docker-overview/">Docker Docs: Docker overview</a></li>
-        <li><a href="https://www.postgresql.org/">PostgreSQL official site</a></li>
-        <li><a href="https://opentelemetry.io/docs/">OpenTelemetry Documentation</a></li>
-        <li><a href="https://aws.amazon.com/lambda/">AWS Lambda</a></li>
-      </ul>
-    </section>
+    <article data-article-root data-markdown="./article.md"></article>
   </main>
 </body>
 </html>

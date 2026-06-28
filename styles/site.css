@@ -59,6 +59,15 @@ h1 {
   min-height: 100dvh;
 }
 
+.view-toggle {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 .dashboard-sidebar {
   position: sticky;
   top: 0;
@@ -94,22 +103,76 @@ h1 {
   gap: 4px;
 }
 
-.dashboard-nav a {
+.dashboard-nav label {
   display: flex;
   align-items: center;
   min-height: 34px;
   padding: 6px 10px;
   border-radius: 6px;
   color: var(--muted);
+  cursor: pointer;
   font-size: 0.92rem;
   font-weight: 650;
   text-decoration: none;
 }
 
-.dashboard-nav a:hover,
-.dashboard-nav a[aria-current="page"] {
+.dashboard-nav label:hover,
+#view-overview:checked ~ .dashboard-sidebar label[for="view-overview"],
+#view-notes:checked ~ .dashboard-sidebar label[for="view-notes"],
+#view-list:checked ~ .dashboard-sidebar label[for="view-list"] {
   background: rgba(255, 255, 255, 0.72);
   color: var(--text);
+}
+
+#view-overview:focus-visible ~ .dashboard-sidebar label[for="view-overview"],
+#view-notes:focus-visible ~ .dashboard-sidebar label[for="view-notes"],
+#view-list:focus-visible ~ .dashboard-sidebar label[for="view-list"] {
+  outline: 2px solid var(--accent-strong);
+  outline-offset: 2px;
+}
+
+.sidebar-list {
+  display: grid;
+  gap: 8px;
+}
+
+.sidebar-list h2 {
+  margin: 0;
+  padding: 0 6px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 750;
+}
+
+.sidebar-list ul {
+  display: grid;
+  gap: 2px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.sidebar-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 30px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  color: var(--muted);
+  font-size: 0.88rem;
+  font-weight: 650;
+}
+
+.sidebar-list li:first-child {
+  background: rgba(255, 255, 255, 0.52);
+  color: var(--text);
+}
+
+.sidebar-list strong {
+  color: var(--muted-soft);
+  font-size: 0.8rem;
 }
 
 .sidebar-summary {
@@ -186,6 +249,16 @@ h1 {
   color: var(--text);
   font-size: 0.92rem;
   font-weight: 700;
+}
+
+.dashboard-view {
+  display: none;
+}
+
+#view-overview:checked ~ .dashboard-workspace .dashboard-view--overview,
+#view-notes:checked ~ .dashboard-workspace .dashboard-view--notes,
+#view-list:checked ~ .dashboard-workspace .dashboard-view--list {
+  display: block;
 }
 
 .metric-grid {
@@ -347,6 +420,11 @@ h1 {
   transition: background-color 120ms ease;
 }
 
+a.note-card {
+  color: inherit;
+  text-decoration: none;
+}
+
 .note-card:last-child,
 .empty-state:last-child {
   border-bottom: 0;
@@ -363,6 +441,13 @@ h1 {
   margin: 0;
   font-size: 1rem;
   font-weight: 650;
+}
+
+.note-card:hover h3,
+.note-card:focus-visible h3 {
+  color: var(--accent-strong);
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
 }
 
 .note-card h3 a {
@@ -391,6 +476,18 @@ h1 {
   gap: 4px;
   color: var(--muted-soft);
   font-size: 0.82rem;
+}
+
+.note-card-action {
+  grid-column: 2;
+  color: var(--accent-strong);
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.note-card:focus-visible {
+  outline: 2px solid var(--accent-strong);
+  outline-offset: -2px;
 }
 
 .category-list {
@@ -442,10 +539,73 @@ h1 {
   border-bottom: 0;
 }
 
+.list-overview {
+  display: grid;
+  gap: 0;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.list-overview li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 18px;
+  border-bottom: 1px solid var(--border);
+}
+
+.list-overview li:last-child {
+  border-bottom: 0;
+}
+
+.list-overview div {
+  display: grid;
+  gap: 4px;
+}
+
+.list-overview strong {
+  color: var(--text);
+  font-size: 1rem;
+}
+
+.list-overview span {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.list-overview em {
+  min-width: 34px;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: var(--surface-muted);
+  color: var(--muted);
+  font-style: normal;
+  font-weight: 750;
+  text-align: center;
+}
+
 .article {
   max-width: 780px;
   margin: 0 auto;
   padding: 66px 24px 88px;
+}
+
+.article-back {
+  margin: 0 0 18px;
+  font-size: 0.9rem;
+}
+
+.article-back a {
+  color: var(--muted);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.article-back a:hover {
+  color: var(--accent-strong);
+  text-decoration: underline;
 }
 
 .article-header {
@@ -612,6 +772,10 @@ h1 {
     display: none;
   }
 
+  .sidebar-list {
+    display: none;
+  }
+
   .dashboard-grid {
     grid-template-columns: 1fr;
   }
@@ -649,7 +813,8 @@ h1 {
   .note-card h3,
   .empty-state h3,
   .note-card p,
-  .empty-state p {
+  .empty-state p,
+  .note-card-action {
     grid-column: auto;
   }
 

@@ -5,26 +5,43 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Notes</title>
   <meta name="description" content="疑問、学び、自分の考えを静的HTMLの記事として蓄積するノート集">
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./styles/site.css">
 </head>
 <body>
   <main class="dashboard-shell">
+    <input class="view-toggle" type="radio" name="dashboard-view" id="view-overview" checked>
+    <input class="view-toggle" type="radio" name="dashboard-view" id="view-notes">
+    <input class="view-toggle" type="radio" name="dashboard-view" id="view-list">
+
     <aside class="dashboard-sidebar" aria-label="ワークスペース">
       <div class="workspace-mark">
         <span>Notes</span>
         <strong>Knowledge base</strong>
       </div>
 
-      <nav class="dashboard-nav" aria-label="ページ内ナビゲーション">
-        <a href="./" aria-current="page">Overview</a>
-        <a href="#recent-notes">最近のノート</a>
-        <a href="#categories">カテゴリ</a>
+      <nav class="dashboard-nav" aria-label="表示切り替え">
+        <label for="view-overview">Overview</label>
+        <label for="view-notes">ノート</label>
+        <label for="view-list">一覧</label>
       </nav>
+
+      <section class="sidebar-list" aria-labelledby="sidebar-list-title">
+        <h2 id="sidebar-list-title">サイドバー一覧</h2>
+        <ul>
+          <li><span>Web</span><strong>4</strong></li>
+          <li><span>AI / LLM</span><strong>0</strong></li>
+          <li><span>読書</span><strong>0</strong></li>
+          <li><span>仕事</span><strong>0</strong></li>
+          <li><span>暮らし</span><strong>0</strong></li>
+          <li><span>アイデア</span><strong>0</strong></li>
+        </ul>
+      </section>
 
       <div class="sidebar-summary">
         <p>公開ノート</p>
         <strong>4</strong>
-        <span>Webカテゴリから開始。読書、仕事、暮らしの知識もここへ追加していく。</span>
+        <span>Webから開始。読書、仕事、暮らしの知識もここへ追加していく。</span>
       </div>
     </aside>
 
@@ -41,106 +58,222 @@
         </div>
       </header>
 
-      <section class="metric-grid" aria-label="概要">
-        <div class="metric-card">
-          <span>Notes</span>
-          <strong>4</strong>
-          <p>公開済み</p>
+      <div class="dashboard-view dashboard-view--overview">
+        <div class="metric-grid">
+          <div class="metric-card">
+            <span>Notes</span>
+            <strong>4</strong>
+            <p>公開済み</p>
+          </div>
+          <div class="metric-card">
+            <span>Lists</span>
+            <strong>6</strong>
+            <p>予定含む</p>
+          </div>
+          <div class="metric-card">
+            <span>Latest area</span>
+            <strong>Web</strong>
+            <p>技術ノートから拡張中</p>
+          </div>
         </div>
-        <div class="metric-card">
-          <span>Categories</span>
-          <strong>6</strong>
-          <p>予定含む</p>
-        </div>
-        <div class="metric-card">
-          <span>Latest area</span>
-          <strong>Web</strong>
-          <p>技術ノートから拡張中</p>
-        </div>
-      </section>
 
-      <div class="dashboard-grid">
-        <section class="panel panel--main" id="recent-notes">
+        <div class="dashboard-grid">
+          <section class="panel panel--main">
+            <div class="panel-heading">
+              <div>
+                <h2>最近のノート</h2>
+                <p>行をクリックすると詳細記事を開きます。</p>
+              </div>
+              <span>4 items</span>
+            </div>
+
+            <div class="note-list">
+              <a class="note-card" href="./web/backend-popular-stack/">
+                <span class="note-meta">
+                  <time datetime="2026-06-16">2026-06-16</time>
+                  <span>Web</span>
+                </span>
+                <h3>バックエンドで今流行りの構成は？</h3>
+                <p>API、PostgreSQL、Redis、Docker、クラウド、監視など、今どきのバックエンド構成を小学生にもわかるたとえで整理します。</p>
+                <span class="note-card-action">詳細を見る</span>
+              </a>
+
+              <a class="note-card" href="./web/frontend-popular-stack/">
+                <span class="note-meta">
+                  <time datetime="2026-06-15">2026-06-15</time>
+                  <span>Web</span>
+                </span>
+                <h3>フロントエンドで今人気の技術スタックは？</h3>
+                <p>TypeScript、React、Next.js、Vite、Tailwind CSSなど、2026年時点で選ばれやすい構成を用途別に整理します。</p>
+                <span class="note-card-action">詳細を見る</span>
+              </a>
+
+              <a class="note-card" href="./web/frontend-rendering-deployment/">
+                <span class="note-meta">
+                  <time datetime="2026-06-14">2026-06-14</time>
+                  <span>Web</span>
+                </span>
+                <h3>フロントエンドのレンダリングとデプロイ形式を比較する</h3>
+                <p>CSR、SSG、SSR、ISR、Edge SSR、Islands、RSC、PWAのメリットとデメリットを整理します。</p>
+                <span class="note-card-action">詳細を見る</span>
+              </a>
+
+              <a class="note-card" href="./web/frontend-essential-skills/">
+                <span class="note-meta">
+                  <time datetime="2026-06-13">2026-06-13</time>
+                  <span>Web</span>
+                </span>
+                <h3>フロントエンドの必須スキルは？</h3>
+                <p>HTML/CSS/JavaScript、アクセシビリティ、性能、テスト、設計など、流行に左右されにくい基礎を整理します。</p>
+                <span class="note-card-action">詳細を見る</span>
+              </a>
+            </div>
+          </section>
+
+          <aside class="dashboard-rail" aria-label="一覧と運用メモ">
+            <section class="panel">
+              <div class="panel-heading">
+                <div>
+                  <h2>一覧</h2>
+                  <p>技術に限らず、気になったことをテーマごとに増やします。</p>
+                </div>
+              </div>
+
+              <ul class="category-list">
+                <li><span>Web</span><strong>4</strong></li>
+                <li><span>AI / LLM</span><strong>0</strong></li>
+                <li><span>読書</span><strong>0</strong></li>
+                <li><span>仕事</span><strong>0</strong></li>
+                <li><span>暮らし</span><strong>0</strong></li>
+                <li><span>アイデア</span><strong>0</strong></li>
+              </ul>
+            </section>
+
+            <section class="panel">
+              <div class="panel-heading">
+                <div>
+                  <h2>運用メモ</h2>
+                  <p>今後のノート追加で意識すること。</p>
+                </div>
+              </div>
+              <ul class="activity-list">
+                <li>1テーマ1ページで残す</li>
+                <li>参照URLと自分の考えを分ける</li>
+                <li>新しい記事を上に追加する</li>
+              </ul>
+            </section>
+          </aside>
+        </div>
+      </div>
+
+      <div class="dashboard-view dashboard-view--notes">
+        <section class="panel panel--main">
           <div class="panel-heading">
             <div>
-              <h2>最近のノート</h2>
-              <p>新しい記事を作ったら、この一覧へ日付順に追加します。</p>
+              <h2 id="notes-title">ノート</h2>
+              <p>読みたい行をクリックすると詳細記事を開きます。</p>
             </div>
             <span>4 items</span>
           </div>
 
           <div class="note-list">
-            <article class="note-card">
-              <div class="note-meta">
+            <a class="note-card" href="./web/backend-popular-stack/">
+              <span class="note-meta">
                 <time datetime="2026-06-16">2026-06-16</time>
                 <span>Web</span>
-              </div>
-              <h3><a href="./web/backend-popular-stack/">バックエンドで今流行りの構成は？</a></h3>
+              </span>
+              <h3>バックエンドで今流行りの構成は？</h3>
               <p>API、PostgreSQL、Redis、Docker、クラウド、監視など、今どきのバックエンド構成を小学生にもわかるたとえで整理します。</p>
-            </article>
+              <span class="note-card-action">詳細を見る</span>
+            </a>
 
-            <article class="note-card">
-              <div class="note-meta">
+            <a class="note-card" href="./web/frontend-popular-stack/">
+              <span class="note-meta">
                 <time datetime="2026-06-15">2026-06-15</time>
                 <span>Web</span>
-              </div>
-              <h3><a href="./web/frontend-popular-stack/">フロントエンドで今人気の技術スタックは？</a></h3>
+              </span>
+              <h3>フロントエンドで今人気の技術スタックは？</h3>
               <p>TypeScript、React、Next.js、Vite、Tailwind CSSなど、2026年時点で選ばれやすい構成を用途別に整理します。</p>
-            </article>
+              <span class="note-card-action">詳細を見る</span>
+            </a>
 
-            <article class="note-card">
-              <div class="note-meta">
+            <a class="note-card" href="./web/frontend-rendering-deployment/">
+              <span class="note-meta">
                 <time datetime="2026-06-14">2026-06-14</time>
                 <span>Web</span>
-              </div>
-              <h3><a href="./web/frontend-rendering-deployment/">フロントエンドのレンダリングとデプロイ形式を比較する</a></h3>
+              </span>
+              <h3>フロントエンドのレンダリングとデプロイ形式を比較する</h3>
               <p>CSR、SSG、SSR、ISR、Edge SSR、Islands、RSC、PWAのメリットとデメリットを整理します。</p>
-            </article>
+              <span class="note-card-action">詳細を見る</span>
+            </a>
 
-            <article class="note-card">
-              <div class="note-meta">
+            <a class="note-card" href="./web/frontend-essential-skills/">
+              <span class="note-meta">
                 <time datetime="2026-06-13">2026-06-13</time>
                 <span>Web</span>
-              </div>
-              <h3><a href="./web/frontend-essential-skills/">フロントエンドの必須スキルは？</a></h3>
+              </span>
+              <h3>フロントエンドの必須スキルは？</h3>
               <p>HTML/CSS/JavaScript、アクセシビリティ、性能、テスト、設計など、流行に左右されにくい基礎を整理します。</p>
-            </article>
+              <span class="note-card-action">詳細を見る</span>
+            </a>
           </div>
         </section>
+      </div>
 
-        <aside class="dashboard-rail" aria-label="カテゴリと運用メモ">
-          <section class="panel" id="categories">
-            <div class="panel-heading">
-              <div>
-                <h2>カテゴリ</h2>
-                <p>技術に限らず、気になったことをテーマごとに増やします。</p>
-              </div>
+      <div class="dashboard-view dashboard-view--list">
+        <section class="panel">
+          <div class="panel-heading">
+            <div>
+              <h2 id="list-title">一覧</h2>
+              <p>これから増やす知識の置き場。今はWebに4件あります。</p>
             </div>
+          </div>
 
-            <ul class="category-list">
-              <li><span>Web</span><strong>4</strong></li>
-              <li><span>AI / LLM</span><strong>0</strong></li>
-              <li><span>読書</span><strong>0</strong></li>
-              <li><span>仕事</span><strong>0</strong></li>
-              <li><span>暮らし</span><strong>0</strong></li>
-              <li><span>アイデア</span><strong>0</strong></li>
-            </ul>
-          </section>
-
-          <section class="panel">
-            <div class="panel-heading">
+          <ul class="list-overview">
+            <li>
               <div>
-                <h2>運用メモ</h2>
-                <p>今後のノート追加で意識すること。</p>
+                <strong>Web</strong>
+                <span>フロントエンド、バックエンド、レンダリング、技術スタック</span>
               </div>
-            </div>
-            <ul class="activity-list">
-              <li>1テーマ1ページで残す</li>
-              <li>参照URLと自分の考えを分ける</li>
-              <li>新しい記事を上に追加する</li>
-            </ul>
-          </section>
-        </aside>
+              <em>4</em>
+            </li>
+            <li>
+              <div>
+                <strong>AI / LLM</strong>
+                <span>モデル、プロンプト、ツール活用のメモを置く予定</span>
+              </div>
+              <em>0</em>
+            </li>
+            <li>
+              <div>
+                <strong>読書</strong>
+                <span>本から得た考え方、使いたいフレームワーク</span>
+              </div>
+              <em>0</em>
+            </li>
+            <li>
+              <div>
+                <strong>仕事</strong>
+                <span>判断、設計、進め方、ふりかえり</span>
+              </div>
+              <em>0</em>
+            </li>
+            <li>
+              <div>
+                <strong>暮らし</strong>
+                <span>習慣、買い物、生活の改善メモ</span>
+              </div>
+              <em>0</em>
+            </li>
+            <li>
+              <div>
+                <strong>アイデア</strong>
+                <span>あとで育てたい仮説や企画</span>
+              </div>
+              <em>0</em>
+            </li>
+          </ul>
+        </section>
       </div>
     </section>
   </main>

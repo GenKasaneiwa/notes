@@ -1,46 +1,29 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title><!-- 記事タイトル --></title>
-  <meta name="description" content="<!-- 記事の短い説明 -->">
-  <link rel="stylesheet" href="../styles/site.css">
+  <title>記事タイトル</title>
+  <meta name="description" content="記事の短い説明">
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../styles/site.css">
+  <script type="module" src="../../scripts/article.js"></script>
 </head>
 <body>
   <main class="article">
+    <p class="article-back"><a href="../../">Notes</a></p>
     <header class="article-header">
-      <p class="article-meta"><time datetime="YYYY-MM-DD">YYYY-MM-DD</time> / カテゴリ</p>
-      <h1><!-- 記事タイトル --></h1>
-      <p><!-- この記事で答える問いを1-2文で書く --></p>
+      <p class="article-meta"><time data-article-date datetime="YYYY-MM-DD">YYYY-MM-DD</time> / <span data-article-category>カテゴリ</span></p>
+      <h1 data-article-title>記事タイトル</h1>
+      <p data-article-description>記事の短い説明</p>
     </header>
 
-    <figure class="article-infographic">
-      <img src="../../images/<!-- カテゴリ -->/<!-- スラッグ -->/infographic.png" alt="<!-- 記事の要点を1文で -->">
-      <figcaption><!-- インフォグラフィックの補足説明 --></figcaption>
+    <figure class="article-infographic" data-article-infographic hidden>
+      <img data-article-infographic-img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="">
+      <figcaption data-article-infographic-caption></figcaption>
     </figure>
 
-    <section>
-      <h2>結論</h2>
-      <p><!-- 最初に短く答える --></p>
-    </section>
-
-    <section>
-      <h2>背景</h2>
-      <p><!-- 何が疑問だったのか、前提を整理する --></p>
-    </section>
-
-    <section>
-      <h2>仕組み</h2>
-      <p><!-- 必要なら図解やコードを入れる --></p>
-    </section>
-
-    <section>
-      <h2>参照</h2>
-      <ul class="reference-list">
-        <li><a href="https://example.com/">一次情報のURL</a></li>
-      </ul>
-    </section>
+    <article data-article-root data-markdown="./article.md"></article>
   </main>
 </body>
 </html>

@@ -7,9 +7,10 @@
 
 - ユーザーの依頼文に「質問」という語が含まれる場合は、1テーマ1ページのHTML記事を作る。文頭である必要はない。
 - ただし、ユーザーが「質問という語の扱いを変えたい」「質問トリガーを直したい」のように運用ルール自体を相談している場合は、記事化せずにルール変更として扱う。
-- 記事は適切なカテゴリディレクトリを作り、その中の `index.html` として保存する。例: `web/http-cache/index.html`、`books/story-thinking/index.html`、`life/morning-routine/index.html`。
-- `templates/article.html` の構成を基準にし、必要に応じて本文、図解、コード例を追加する。
-- 記事ヘッダー直後（「結論」の前）に、記事内容を要約したインフォグラフィックを入れる。Cursor の画像生成機能で作成し、`images/<カテゴリ>/<スラッグ>/infographic.png` に保存する。例: `web/http-cache/index.html` なら `images/web/http-cache/infographic.png`。HTML では `figure.article-infographic` で `<img>` と `figcaption` を書き、`alt` に記事の要点を入れる。
+- 記事は適切なカテゴリディレクトリを作り、その中の `index.html` と `article.md` として保存する。例: `web/http-cache/index.html` と `web/http-cache/article.md`、`books/story-thinking/index.html` と `books/story-thinking/article.md`、`life/morning-routine/index.html` と `life/morning-routine/article.md`。
+- `templates/article.html` を詳細ページの表示シェル、`templates/article.md` を本文テンプレートとして使う。
+- 記事本文は `article.md` に書く。`index.html` は `scripts/article.js` で `article.md` を読み込んで表示する。
+- 記事ヘッダー直後（「結論」の前）に、記事内容を要約したインフォグラフィックを入れる。Cursor の画像生成機能で作成し、`images/<カテゴリ>/<スラッグ>/infographic.png` に保存する。例: `web/http-cache/article.md` なら `images/web/http-cache/infographic.png`。Markdown の front matter に `infographic`、`infographic_alt`、`infographic_caption` を書く。
 - `index.html` の「最近のノート」へ新しい記事カードを追加する。新しい記事を上に置く。
 - 事実確認が必要な内容は一次情報を優先して調べ、記事末尾に参照URLを載せる。
 - 推測と確認済み情報を混ぜない。推測は本文で明示する。
@@ -21,6 +22,7 @@
 
 - 文字コードはUTF-8、言語は `ja`。
 - スタイルは原則 `styles/site.css` に寄せ、記事ごとのインラインCSSは避ける。
+- Markdown本文では見出し、段落、箇条書き、リンク、太字を基本にする。表や複雑な図解は必要に応じて生HTMLを入れてよい。
 - 図解が必要な場合はHTML/CSSで軽く表現するか、`images/` にSVG/画像を置く。
 - インフォグラフィックは日本語テキスト中心、横長（16:9 前後）、サイトの落ち着いたトーンに合わせる。キーワード・関係・結論が一目で分かる構成にする。
 - スマホで読める幅、見出し、余白を保つ。
@@ -30,6 +32,7 @@
 
 - `index.html` から記事へのリンクが正しい。
 - 記事から `../styles/site.css` などの相対パスが正しい。
+- 記事ディレクトリに `article.md` が存在し、詳細ページで読み込める。
 - インフォグラフィック画像が存在し、記事からの相対パスが正しい。
 - 参照URLが開ける。
 - 秘匿情報が含まれていない。
