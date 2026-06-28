@@ -59,6 +59,7 @@ export function initDashboard(root = document) {
     button.addEventListener("click", () => {
       selectedCategory = button.dataset.categoryFilter || "all";
       update();
+      button.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
     });
   }
 
