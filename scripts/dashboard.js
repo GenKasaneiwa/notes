@@ -38,165 +38,137 @@ function readNoteFromElement(element) {
   };
 }
 
+function createSlide(category, notes) {
+  const slide = document.createElement("section");
+  slide.className = "swiper-slide note-slide";
+  slide.dataset.noteSlide = category;
+
+  const heading = document.createElement("div");
+  heading.className = "panel-heading";
+
+  const count = document.createElement("span");
+  count.dataset.resultCount = "";
+  heading.append(count);
+
+  const list = document.createElement("div");
+  list.className = "note-list";
+
+  for (const note of filterNotes(notes, { category })) {
+    const clone = note.element.cloneNode(true);
+    clone.removeAttribute("data-note-card");
+    list.append(clone);
+  }
+
+  const empty = document.createElement("p");
+  empty.className = "empty-state";
+  empty.dataset.emptyState = "";
+  empty.hidden = true;
+  empty.textContent = "該当するノートはありません。";
+
+  slide.append(heading, list, empty);
+  return slide;
+}
+
+function readSlideState(slide) {
+  const cards = [...slide.querySelectorAll(".note-card")].map(readNoteFromElement);
+  return {
+    category: slide.dataset.noteSlide || "all",
+    cards,
+    count: slide.querySelector("[data-result-count]"),
+    empty: slide.querySelector("[data-empty-state]"),
+  };
+}
+
 export function initDashboard(root = document) {
   const noteElements = [...root.querySelectorAll("[data-note-card]")];
   if (noteElements.length === 0) return;
 
-  const notes = noteElements.map(readNoteFromElement);
+  const sourceNotes = noteElements.map(readNoteFromElement);
   const searchInput = root.querySelector("[data-note-search]");
   const categoryButtons = [...root.querySelectorAll("[data-category-filter]")];
   const categories = categoryButtons.map((button) => button.dataset.categoryFilter || "all");
-  const swipeTarget = root.querySelector("[data-note-swipe]") || root.querySelector(".note-list");
-  const resultCount = root.querySelector("[data-result-count]");
-  const emptyState = root.querySelector("[data-empty-state]");
+  const swiperContainer = root.querySelector("[data-note-swiper]");
+  const swiperWrapper = root.querySelector("[data-swiper-wrapper]");
   let selectedCategory = "all";
-  let suppressNextClick = false;
+  let swiper = null;
 
-  const update = () => {
-    const visibleNotes = filterNotes(notes, {
-      query: searchInput?.value || "",
-      category: selectedCategory,
-    });
-    const visibleElements = new Set(visibleNotes.map((note) => note.element));
-
-    for (const note of notes) {
-      note.element.hidden = !visibleElements.has(note.element);
+  if (swiperContainer && swiperWrapper && typeof globalThis.Swiper === "function") {
+    for (const category of categories.slice(1)) {
+      const hasSlide = [...swiperWrapper.querySelectorAll("[data-note-slide]")]
+        .some((slide) => slide.dataset.noteSlide === category);
+      if (!hasSlide) {
+        swiperWrapper.append(createSlide(category, sourceNotes));
+      }
     }
+  }
+
+  const slideStates = [...root.querySelectorAll("[data-note-slide]")].map(readSlideState);
+
+  const scrollSelectedCategoryIntoView = () => {
+    const selectedButton = categoryButtons.find((button) => button.dataset.categoryFilter === selectedCategory);
+    selectedButton?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+  };
+
+  const update = ({ syncSwiper = false, scrollTab = false } = {}) => {
+    const query = searchInput?.value || "";
+    const activeIndex = Math.max(0, categories.indexOf(selectedCategory));
 
     for (const button of categoryButtons) {
       const isActive = button.dataset.categoryFilter === selectedCategory;
       button.setAttribute("aria-pressed", String(isActive));
     }
 
-    if (resultCount) resultCount.textContent = `${visibleNotes.length} items`;
-    if (emptyState) emptyState.hidden = visibleNotes.length !== 0;
+    for (const state of slideStates) {
+      const category = swiper ? "all" : selectedCategory;
+      const visibleCards = filterNotes(state.cards, { query, category });
+      const visibleElements = new Set(visibleCards.map((note) => note.element));
+
+      for (const note of state.cards) {
+        note.element.hidden = !visibleElements.has(note.element);
+      }
+
+      if (state.count) state.count.textContent = `${visibleCards.length} items`;
+      if (state.empty) state.empty.hidden = visibleCards.length !== 0;
+    }
+
+    if (syncSwiper && swiper && swiper.activeIndex !== activeIndex) {
+      swiper.slideTo(activeIndex);
+    }
+
+    if (swiper) swiper.updateAutoHeight(0);
+    if (scrollTab) scrollSelectedCategoryIntoView();
   };
 
-  const setSelectedCategory = (category) => {
+  const setSelectedCategory = (category, options = {}) => {
     selectedCategory = category || "all";
-    update();
-    const selectedButton = categoryButtons.find((button) => button.dataset.categoryFilter === selectedCategory);
-    selectedButton?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+    update(options);
   };
 
-  searchInput?.addEventListener("input", update);
+  searchInput?.addEventListener("input", () => update());
   for (const button of categoryButtons) {
     button.addEventListener("click", () => {
-      setSelectedCategory(button.dataset.categoryFilter || "all");
+      setSelectedCategory(button.dataset.categoryFilter || "all", {
+        syncSwiper: true,
+        scrollTab: true,
+      });
     });
   }
 
-  if (swipeTarget) {
-    const swipeDocument = swipeTarget.ownerDocument;
-    let startX = 0;
-    let startY = 0;
-    let currentX = 0;
-    let currentY = 0;
-    let pointerId = null;
-    let tracking = false;
-    let swiping = false;
-
-    const clearSwipeOffset = () => {
-      swipeTarget.classList.remove("is-swiping");
-      swipeTarget.style.removeProperty("--swipe-offset");
-    };
-
-    const applySwipeOffset = (deltaX) => {
-      const boundedOffset = Math.max(-86, Math.min(86, deltaX * 0.42));
-      swipeTarget.style.setProperty("--swipe-offset", `${boundedOffset}px`);
-    };
-
-    const finishSwipe = (deltaX, deltaY) => {
-      const direction = getSwipeDirection(deltaX, deltaY);
-      tracking = false;
-      pointerId = null;
-      clearSwipeOffset();
-      if (!direction) return;
-
-      setSelectedCategory(getAdjacentCategory(categories, selectedCategory, direction));
-      suppressNextClick = true;
-      setTimeout(() => {
-        suppressNextClick = false;
-      }, 350);
-    };
-
-    const startSwipe = (clientX, clientY, id = null) => {
-      pointerId = id;
-      startX = clientX;
-      startY = clientY;
-      currentX = startX;
-      currentY = startY;
-      tracking = true;
-      swiping = false;
-    };
-
-    const updateSwipe = (clientX, clientY, event) => {
-      currentX = clientX;
-      currentY = clientY;
-      const deltaX = currentX - startX;
-      const deltaY = currentY - startY;
-      if (Math.abs(deltaX) > 12 && Math.abs(deltaX) > Math.abs(deltaY) * 1.2) {
-        swiping = true;
-        swipeTarget.classList.add("is-swiping");
-        applySwipeOffset(deltaX);
-        event?.preventDefault();
-      }
-    };
-
-    swipeTarget.addEventListener("pointerdown", (event) => {
-      if (!event.isPrimary) return;
-      startSwipe(event.clientX, event.clientY, event.pointerId);
-      swipeTarget.setPointerCapture?.(event.pointerId);
+  if (swiperContainer && typeof globalThis.Swiper === "function") {
+    swiper = new globalThis.Swiper(swiperContainer, {
+      autoHeight: true,
+      resistanceRatio: 0.58,
+      slidesPerView: 1,
+      spaceBetween: 10,
+      speed: 240,
+      threshold: 4,
+      on: {
+        slideChange() {
+          selectedCategory = categories[this.activeIndex] || "all";
+          update({ scrollTab: true });
+        },
+      },
     });
-
-    swipeDocument.addEventListener("pointermove", (event) => {
-      if (!tracking || event.pointerId !== pointerId) return;
-      updateSwipe(event.clientX, event.clientY, event);
-    });
-
-    swipeDocument.addEventListener("pointerup", (event) => {
-      if (!tracking || event.pointerId !== pointerId) return;
-      finishSwipe(event.clientX - startX, event.clientY - startY);
-    });
-
-    swipeDocument.addEventListener("pointercancel", (event) => {
-      if (event.pointerId !== pointerId) return;
-      tracking = false;
-      pointerId = null;
-      clearSwipeOffset();
-    });
-
-    swipeTarget.addEventListener("touchstart", (event) => {
-      if (tracking || event.touches.length !== 1) return;
-      const touch = event.touches[0];
-      startSwipe(touch.clientX, touch.clientY, "touch");
-    }, { passive: true });
-
-    swipeDocument.addEventListener("touchmove", (event) => {
-      if (!tracking || event.touches.length !== 1) return;
-      const touch = event.touches[0];
-      updateSwipe(touch.clientX, touch.clientY, event);
-    }, { passive: false });
-
-    swipeDocument.addEventListener("touchend", (event) => {
-      if (!tracking) return;
-      const touch = event.changedTouches[0];
-      finishSwipe(touch.clientX - startX, touch.clientY - startY);
-    });
-
-    swipeDocument.addEventListener("touchcancel", () => {
-      tracking = false;
-      pointerId = null;
-      clearSwipeOffset();
-    });
-
-    swipeTarget.addEventListener("click", (event) => {
-      if (!suppressNextClick && !swiping) return;
-      event.preventDefault();
-      event.stopPropagation();
-      suppressNextClick = false;
-      swiping = false;
-    }, true);
   }
 
   update();

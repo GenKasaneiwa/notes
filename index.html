@@ -8,7 +8,9 @@
   <meta name="description" content="疑問、学び、自分の考えをMarkdown記事として蓄積するノート集">
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.conditional.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.css">
   <link rel="stylesheet" href="./styles/site.css">
+  <script src="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js"></script>
   <script type="module" src="./scripts/dashboard.js"></script>
 </head>
 <body>
@@ -53,54 +55,58 @@
 
     <section class="dashboard-workspace" aria-labelledby="notes-title">
       <h1 id="notes-title" hidden>Notes</h1>
-      <section class="panel panel--main" data-note-swipe>
-        <div class="panel-heading">
-          <span data-result-count>4 items</span>
+      <section class="panel panel--main note-swiper swiper" data-note-swiper>
+        <div class="swiper-wrapper" data-swiper-wrapper>
+          <section class="swiper-slide note-slide" data-note-slide="all">
+            <div class="panel-heading">
+              <span data-result-count>4 items</span>
+            </div>
+
+            <div class="note-list">
+              <a class="note-card" href="./web/backend-popular-stack/" data-note-card data-category="Web" data-title="バックエンドで今流行りの構成は？" data-description="API PostgreSQL Redis Docker クラウド 監視 バックエンド">
+                <span class="note-meta">
+                  <time datetime="2026-06-16">2026-06-16</time>
+                  <span>Web</span>
+                </span>
+                <h2>バックエンドで今流行りの構成は？</h2>
+                <p>API、PostgreSQL、Redis、Docker、クラウド、監視など、今どきのバックエンド構成を小学生にもわかるたとえで整理します。</p>
+                <span class="note-card-action">詳細を見る</span>
+              </a>
+
+              <a class="note-card" href="./web/frontend-popular-stack/" data-note-card data-category="Web" data-title="フロントエンドで今人気の技術スタックは？" data-description="TypeScript React Next.js Vite Tailwind CSS フロントエンド">
+                <span class="note-meta">
+                  <time datetime="2026-06-15">2026-06-15</time>
+                  <span>Web</span>
+                </span>
+                <h2>フロントエンドで今人気の技術スタックは？</h2>
+                <p>TypeScript、React、Next.js、Vite、Tailwind CSSなど、2026年時点で選ばれやすい構成を用途別に整理します。</p>
+                <span class="note-card-action">詳細を見る</span>
+              </a>
+
+              <a class="note-card" href="./web/frontend-rendering-deployment/" data-note-card data-category="Web" data-title="フロントエンドのレンダリングとデプロイ形式を比較する" data-description="CSR SSG SSR ISR Edge SSR Islands RSC PWA レンダリング デプロイ">
+                <span class="note-meta">
+                  <time datetime="2026-06-14">2026-06-14</time>
+                  <span>Web</span>
+                </span>
+                <h2>フロントエンドのレンダリングとデプロイ形式を比較する</h2>
+                <p>CSR、SSG、SSR、ISR、Edge SSR、Islands、RSC、PWAのメリットとデメリットを整理します。</p>
+                <span class="note-card-action">詳細を見る</span>
+              </a>
+
+              <a class="note-card" href="./web/frontend-essential-skills/" data-note-card data-category="Web" data-title="フロントエンドの必須スキルは？" data-description="HTML CSS JavaScript アクセシビリティ 性能 テスト 設計 フロントエンド">
+                <span class="note-meta">
+                  <time datetime="2026-06-13">2026-06-13</time>
+                  <span>Web</span>
+                </span>
+                <h2>フロントエンドの必須スキルは？</h2>
+                <p>HTML/CSS/JavaScript、アクセシビリティ、性能、テスト、設計など、流行に左右されにくい基礎を整理します。</p>
+                <span class="note-card-action">詳細を見る</span>
+              </a>
+            </div>
+
+            <p class="empty-state" data-empty-state hidden>該当するノートはありません。</p>
+          </section>
         </div>
-
-        <div class="note-list">
-          <a class="note-card" href="./web/backend-popular-stack/" data-note-card data-category="Web" data-title="バックエンドで今流行りの構成は？" data-description="API PostgreSQL Redis Docker クラウド 監視 バックエンド">
-            <span class="note-meta">
-              <time datetime="2026-06-16">2026-06-16</time>
-              <span>Web</span>
-            </span>
-            <h2>バックエンドで今流行りの構成は？</h2>
-            <p>API、PostgreSQL、Redis、Docker、クラウド、監視など、今どきのバックエンド構成を小学生にもわかるたとえで整理します。</p>
-            <span class="note-card-action">詳細を見る</span>
-          </a>
-
-          <a class="note-card" href="./web/frontend-popular-stack/" data-note-card data-category="Web" data-title="フロントエンドで今人気の技術スタックは？" data-description="TypeScript React Next.js Vite Tailwind CSS フロントエンド">
-            <span class="note-meta">
-              <time datetime="2026-06-15">2026-06-15</time>
-              <span>Web</span>
-            </span>
-            <h2>フロントエンドで今人気の技術スタックは？</h2>
-            <p>TypeScript、React、Next.js、Vite、Tailwind CSSなど、2026年時点で選ばれやすい構成を用途別に整理します。</p>
-            <span class="note-card-action">詳細を見る</span>
-          </a>
-
-          <a class="note-card" href="./web/frontend-rendering-deployment/" data-note-card data-category="Web" data-title="フロントエンドのレンダリングとデプロイ形式を比較する" data-description="CSR SSG SSR ISR Edge SSR Islands RSC PWA レンダリング デプロイ">
-            <span class="note-meta">
-              <time datetime="2026-06-14">2026-06-14</time>
-              <span>Web</span>
-            </span>
-            <h2>フロントエンドのレンダリングとデプロイ形式を比較する</h2>
-            <p>CSR、SSG、SSR、ISR、Edge SSR、Islands、RSC、PWAのメリットとデメリットを整理します。</p>
-            <span class="note-card-action">詳細を見る</span>
-          </a>
-
-          <a class="note-card" href="./web/frontend-essential-skills/" data-note-card data-category="Web" data-title="フロントエンドの必須スキルは？" data-description="HTML CSS JavaScript アクセシビリティ 性能 テスト 設計 フロントエンド">
-            <span class="note-meta">
-              <time datetime="2026-06-13">2026-06-13</time>
-              <span>Web</span>
-            </span>
-            <h2>フロントエンドの必須スキルは？</h2>
-            <p>HTML/CSS/JavaScript、アクセシビリティ、性能、テスト、設計など、流行に左右されにくい基礎を整理します。</p>
-            <span class="note-card-action">詳細を見る</span>
-          </a>
-        </div>
-
-        <p class="empty-state" data-empty-state hidden>該当するノートはありません。</p>
       </section>
     </section>
   </main>

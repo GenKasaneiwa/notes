@@ -271,19 +271,18 @@ h1 {
   overflow: clip;
 }
 
-[data-note-swipe] {
+.note-swiper {
+  width: 100%;
   touch-action: pan-y;
-  transition: transform 160ms ease;
-  will-change: transform;
 }
 
-[data-note-swipe] a {
-  -webkit-user-drag: none;
+.note-swiper .swiper-wrapper {
+  align-items: flex-start;
 }
 
-[data-note-swipe].is-swiping {
-  transform: translateX(var(--swipe-offset, 0));
-  transition: none;
+.note-slide {
+  height: auto;
+  overflow: clip;
 }
 
 .panel-heading {
@@ -812,6 +811,10 @@ p.empty-state {
   .dashboard-workspace {
     width: min(100% - 20px, 1180px);
     padding: 10px 0 44px;
+  }
+
+  .panel-heading {
+    display: none;
   }
 
   .note-card,
