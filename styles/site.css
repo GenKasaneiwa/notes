@@ -271,6 +271,21 @@ h1 {
   overflow: clip;
 }
 
+[data-note-swipe] {
+  touch-action: pan-y;
+  transition: transform 160ms ease;
+  will-change: transform;
+}
+
+[data-note-swipe] a {
+  -webkit-user-drag: none;
+}
+
+[data-note-swipe].is-swiping {
+  transform: translateX(var(--swipe-offset, 0));
+  transition: none;
+}
+
 .panel-heading {
   display: flex;
   align-items: center;

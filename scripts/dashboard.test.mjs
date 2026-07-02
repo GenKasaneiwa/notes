@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { filterNotes, getAdjacentCategory } from "./dashboard.js";
+import { filterNotes, getAdjacentCategory, getSwipeDirection } from "./dashboard.js";
 
 const notes = [
   { title: "バックエンドで今流行りの構成は？", description: "PostgreSQL と Redis", category: "Web" },
@@ -19,5 +19,10 @@ assert.equal(getAdjacentCategory(categories, "Web", "previous"), "all");
 assert.equal(getAdjacentCategory(categories, "読書", "next"), "all");
 assert.equal(getAdjacentCategory(categories, "all", "previous"), "読書");
 assert.equal(getAdjacentCategory(categories, "missing", "next"), "all");
+
+assert.equal(getSwipeDirection(-90, 12), "next");
+assert.equal(getSwipeDirection(90, 12), "previous");
+assert.equal(getSwipeDirection(-30, 0), null);
+assert.equal(getSwipeDirection(-90, 100), null);
 
 console.log("dashboard filter tests passed");

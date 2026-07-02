@@ -22,6 +22,13 @@ export function getAdjacentCategory(categories, currentCategory, direction) {
   return categories[(currentIndex + offset + categories.length) % categories.length];
 }
 
+export function getSwipeDirection(deltaX, deltaY, threshold = 58) {
+  const absX = Math.abs(deltaX);
+  const absY = Math.abs(deltaY);
+  if (absX < threshold || absX < absY * 1.35) return null;
+  return deltaX < 0 ? "next" : "previous";
+}
+
 function readNoteFromElement(element) {
   return {
     element,
@@ -80,51 +87,115 @@ export function initDashboard(root = document) {
   }
 
   if (swipeTarget) {
+    const swipeDocument = swipeTarget.ownerDocument;
     let startX = 0;
     let startY = 0;
+    let currentX = 0;
+    let currentY = 0;
+    let pointerId = null;
     let tracking = false;
+    let swiping = false;
 
-    swipeTarget.addEventListener("touchstart", (event) => {
-      if (event.touches.length !== 1) return;
-      startX = event.touches[0].clientX;
-      startY = event.touches[0].clientY;
-      tracking = true;
-    }, { passive: true });
+    const clearSwipeOffset = () => {
+      swipeTarget.classList.remove("is-swiping");
+      swipeTarget.style.removeProperty("--swipe-offset");
+    };
 
-    swipeTarget.addEventListener("touchmove", (event) => {
-      if (!tracking || event.touches.length !== 1) return;
-      const deltaX = event.touches[0].clientX - startX;
-      const deltaY = event.touches[0].clientY - startY;
-      if (Math.abs(deltaX) > 18 && Math.abs(deltaX) > Math.abs(deltaY) * 1.35) {
-        event.preventDefault();
-      }
-    }, { passive: false });
+    const applySwipeOffset = (deltaX) => {
+      const boundedOffset = Math.max(-86, Math.min(86, deltaX * 0.42));
+      swipeTarget.style.setProperty("--swipe-offset", `${boundedOffset}px`);
+    };
 
-    swipeTarget.addEventListener("touchend", (event) => {
-      if (!tracking) return;
+    const finishSwipe = (deltaX, deltaY) => {
+      const direction = getSwipeDirection(deltaX, deltaY);
       tracking = false;
-      const touch = event.changedTouches[0];
-      const deltaX = touch.clientX - startX;
-      const deltaY = touch.clientY - startY;
-      if (Math.abs(deltaX) < 58 || Math.abs(deltaX) < Math.abs(deltaY) * 1.35) return;
+      pointerId = null;
+      clearSwipeOffset();
+      if (!direction) return;
 
-      const direction = deltaX < 0 ? "next" : "previous";
       setSelectedCategory(getAdjacentCategory(categories, selectedCategory, direction));
       suppressNextClick = true;
       setTimeout(() => {
         suppressNextClick = false;
       }, 350);
+    };
+
+    const startSwipe = (clientX, clientY, id = null) => {
+      pointerId = id;
+      startX = clientX;
+      startY = clientY;
+      currentX = startX;
+      currentY = startY;
+      tracking = true;
+      swiping = false;
+    };
+
+    const updateSwipe = (clientX, clientY, event) => {
+      currentX = clientX;
+      currentY = clientY;
+      const deltaX = currentX - startX;
+      const deltaY = currentY - startY;
+      if (Math.abs(deltaX) > 12 && Math.abs(deltaX) > Math.abs(deltaY) * 1.2) {
+        swiping = true;
+        swipeTarget.classList.add("is-swiping");
+        applySwipeOffset(deltaX);
+        event?.preventDefault();
+      }
+    };
+
+    swipeTarget.addEventListener("pointerdown", (event) => {
+      if (!event.isPrimary) return;
+      startSwipe(event.clientX, event.clientY, event.pointerId);
+      swipeTarget.setPointerCapture?.(event.pointerId);
     });
 
-    swipeTarget.addEventListener("touchcancel", () => {
+    swipeDocument.addEventListener("pointermove", (event) => {
+      if (!tracking || event.pointerId !== pointerId) return;
+      updateSwipe(event.clientX, event.clientY, event);
+    });
+
+    swipeDocument.addEventListener("pointerup", (event) => {
+      if (!tracking || event.pointerId !== pointerId) return;
+      finishSwipe(event.clientX - startX, event.clientY - startY);
+    });
+
+    swipeDocument.addEventListener("pointercancel", (event) => {
+      if (event.pointerId !== pointerId) return;
       tracking = false;
+      pointerId = null;
+      clearSwipeOffset();
+    });
+
+    swipeTarget.addEventListener("touchstart", (event) => {
+      if (tracking || event.touches.length !== 1) return;
+      const touch = event.touches[0];
+      startSwipe(touch.clientX, touch.clientY, "touch");
+    }, { passive: true });
+
+    swipeDocument.addEventListener("touchmove", (event) => {
+      if (!tracking || event.touches.length !== 1) return;
+      const touch = event.touches[0];
+      updateSwipe(touch.clientX, touch.clientY, event);
+    }, { passive: false });
+
+    swipeDocument.addEventListener("touchend", (event) => {
+      if (!tracking) return;
+      const touch = event.changedTouches[0];
+      finishSwipe(touch.clientX - startX, touch.clientY - startY);
+    });
+
+    swipeDocument.addEventListener("touchcancel", () => {
+      tracking = false;
+      pointerId = null;
+      clearSwipeOffset();
     });
 
     swipeTarget.addEventListener("click", (event) => {
-      if (!suppressNextClick) return;
+      if (!suppressNextClick && !swiping) return;
       event.preventDefault();
       event.stopPropagation();
       suppressNextClick = false;
+      swiping = false;
     }, true);
   }
 
